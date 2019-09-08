@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import leaf from './healthy.jpg';
 import Notifier from './components/Notifier';
-
+import Canvas from './components/Canvas';
 class App extends Component {
   constructor() {
     super();
@@ -36,6 +36,7 @@ class App extends Component {
           <h1 className="App-title">Plant OS</h1>
         </header>
         <Notifier offline={this.state.offline} />
+        <Canvas offline={this.state.offline} />
       </div>
     );
   }

@@ -1,33 +1,38 @@
-const webcam = (webcamElement, canvasElement) => {
+class Webcam {
 
-    const adjustVideoSize = (width, height) => {
+    constructor(webcamElement, canvasElement) {
+        this.webcamElement = webcamElement;
+        this.canvasElement = canvasElement;
+    }
+
+    adjustVideoSize = (width, height) => {
         const aspectRatio = width / height;
         if (width >= height) {
-            webcamElement.width = aspectRatio * webcamElement.height;
+            this.webcamElement.width = aspectRatio * this.webcamElement.height;
         } else {
-            webcamElement.height = webcamElement.width / aspectRatio;
+            this.webcamElement.height = this.webcamElement.width / aspectRatio;
         }
     }
 
-    const setup = async () => {
+    setup = async () => {
         return new Promise((resolve, reject) => {
             if (navigator.mediaDevices.getUserMedia !== undefined) {
                 navigator.mediaDevices.getUserMedia({
                     audio: false, video: { facingMode: 'user' }
                 })
                     .then((mediaStream) => {
-                        if ("srcObject" in webcamElement) {
-                            webcamElement.srcObject = mediaStream;
+                        if ("srcObject" in this.webcamElement) {
+                            this.webcamElement.srcObject = mediaStream;
                         } else {
                             // For older browsers without the srcObject.
-                            webcamElement.src = window.URL.createObjectURL(mediaStream);
+                            this.webcamElement.src = window.URL.createObjectURL(mediaStream);
                         }
-                        webcamElement.addEventListener(
+                        this.webcamElement.addEventListener(
                             'loadeddata',
                             async () => {
-                                adjustVideoSize(
-                                    webcamElement.videoWidth,
-                                    webcamElement.videoHeight
+                                this.adjustVideoSize(
+                                    this.webcamElement.videoWidth,
+                                    this.webcamElement.videoHeight
                                 );
                                 resolve();
                             },
@@ -40,32 +45,32 @@ const webcam = (webcamElement, canvasElement) => {
         });
     }
 
-    const _drawImage = () => {
-        const imageWidth = webcamElement.videoWidth;
-        const imageHeight = webcamElement.videoHeight;
+    _drawImage = () => {
+        const imageWidth = this.webcamElement.videoWidth;
+        const imageHeight = this.webcamElement.videoHeight;
 
-        const context = canvasElement.getContext('2d');
-        canvasElement.width = imageWidth;
-        canvasElement.height = imageHeight;
+        const context = this.canvasElement.getContext('2d');
+        this.canvasElement.width = imageWidth;
+        this.canvasElement.height = imageHeight;
 
-        context.drawImage(webcamElement, 0, 0, imageWidth, imageHeight);
+        context.drawImage(this.webcamElement, 0, 0, imageWidth, imageHeight);
         return { imageHeight, imageWidth };
     }
 
-    const takeBlobPhoto = () => {
-        const { imageWidth, imageHeight } = _drawImage();
+    takeBlobPhoto = () => {
+        const { imageWidth, imageHeight } = this._drawImage();
         return new Promise((resolve, reject) => {
-            canvasElement.toBlob((blob) => {
+            this.canvasElement.toBlob((blob) => {
                 resolve({ blob, imageHeight, imageWidth });
             });
         });
     }
 
-    const takeBase64Photo = ({ type, quality } = { type: 'png', quality: 1 }) => {
-        const { imageHeight, imageWidth } = _drawImage();
-        const base64 = canvasElement.toDataURL('image/' + type, quality);
+    takeBase64Photo = ({ type, quality } = { type: 'png', quality: 1 }) => {
+        const { imageHeight, imageWidth } = this._drawImage();
+        const base64 = this.canvasElement.toDataURL('image/' + type, quality);
         return { base64, imageHeight, imageWidth };
     }
 }
 
-export default webcam;
+export default Webcam;
