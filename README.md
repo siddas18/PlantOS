@@ -3,3 +3,8 @@ A PWA that can be used to identify a plant species from image of its leaf / flow
 
 Running Kmeans algorithm to pick out clusters from leaf image.
 Using binary_fill_holes method to remove inconsistencies but not working as expected.
+
+Prerequisites:
+scikit-learn
+matplotlib
+opencv-python
