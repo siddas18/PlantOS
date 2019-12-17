@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Webcam from '../WebCam';
 import './styles.css';
+import axios from "axios";
 
 class Canvas extends Component {
     constructor() {
@@ -85,16 +86,16 @@ class Canvas extends Component {
             this.discardImage();
         } else {
             this.setState({ uploading: true });
-            // axios.post(
-            //     `https://api.cloudinary.com/v1_1/CLOUDINARY_CLOUD_NAME/image/upload`,
-            //     {
-            //         file: this.state.capturedImage,
-            //         upload_preset: 'CLOUDINARY_CLOUD_PRESET'
-            //     }
-            // ).then((data) => this.checkUploadStatus(data)).catch((error) => {
-            //     alert('Sorry, we encountered an error uploading your image');
-            //     this.setState({ 'uploading': false });
-            // });
+            axios.post(
+                `http://localhost:5000`,
+                {
+                    file: this.state.capturedImage,
+                    upload_preset: 'localhost_preset'
+                }
+            ).then((data) => this.checkUploadStatus(data)).catch((error) => {
+                alert('Sorry, we encountered an error uploading your image');
+                this.setState({ 'uploading': false });
+            });
             this.checkUploadStatus({ status: 200 });
         }
     }
@@ -130,18 +131,18 @@ class Canvas extends Component {
             this.setState({ uploading: true });
             for (let i = 0; i < images.length; i++) {
                 // upload
-                // axios.post(
-                //     `https://api.cloudinary.com/v1_1/CLOUDINARY_CLOUD_NAME/image/upload`,
-                //     {
-                //         file: images[i].val,
-                //         upload_preset: 'CLOUDINARY_CLOUD_PRESET'
-                //     }
+                axios.post(
+                    `http://localhost:5000`,
+                    {
+                        file: images[i].val,
+                        upload_preset: 'localhost_preset'
+                    }
 
-                // ).then(
-                //     (data) => this.checkUploadStatus(data)
-                // ).catch((error) => {
-                //     error = true;
-                // })
+                ).then(
+                    (data) => this.checkUploadStatus(data)
+                ).catch((error) => {
+                    error = true;
+                })
                 this.checkUploadStatus({ status: 200 });
             }
             this.setState({ 'uploading': false });
